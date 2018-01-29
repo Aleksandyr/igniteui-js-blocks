@@ -4,6 +4,8 @@ import { By } from "@angular/platform-browser";
 import { IgxToggleBoxModule, IgxTogglerDirective } from "./toggler.directive";
 
 fdescribe("IgxToggler", () => {
+    const HIDDEN_TOGGLER_CLASS = "igx-toggler--hidden";
+    const TOGGLER_CLASS = "igx-toggler";
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
@@ -26,7 +28,18 @@ fdescribe("IgxToggler", () => {
         fixture.detectChanges();
 
         const divEl = fixture.debugElement.query(By.directive(IgxTogglerDirective)).nativeElement;
-        expect(divEl.classList.contains("hidden")).toBeTruthy();
+        expect(divEl.classList.contains(HIDDEN_TOGGLER_CLASS)).toBeTruthy();
+    });
+    it("Test", () => {
+        const fixture = TestBed.createComponent(IgxTogglerTestClass);
+        fixture.detectChanges();
+
+        const divEl = fixture.debugElement.query(By.directive(IgxTogglerDirective)).nativeElement;
+        expect(fixture.componentInstance.isOpen).toBe(false);
+        fixture.componentInstance.isOpen = true;
+        fixture.detectChanges();
+        expect(fixture.componentInstance.isOpen).toBe(true);
+        expect(divEl.classList.contains(TOGGLER_CLASS)).toBeTruthy();
     });
     it("should emit 'onOpen' event", () => {
         const fixture = TestBed.createComponent(IgxTogglerTestClass);
@@ -34,7 +47,7 @@ fdescribe("IgxToggler", () => {
 
         const toggler = fixture.componentInstance.toggler;
         spyOn(toggler.onOpen, "emit");
-        toggler.onOpen.emit();
+        toggler.open();
         fixture.detectChanges();
 
         expect(toggler.onOpen.emit).toHaveBeenCalled();
@@ -45,7 +58,7 @@ fdescribe("IgxToggler", () => {
 
         const toggler = fixture.componentInstance.toggler;
         spyOn(toggler.onClose, "emit");
-        toggler.onClose.emit();
+        toggler.close();
         fixture.detectChanges();
 
         expect(toggler.onClose.emit).toHaveBeenCalled();
@@ -62,7 +75,7 @@ fdescribe("IgxToggler", () => {
         fixture.detectChanges();
 
         expect(dir.onOpen.emit).toHaveBeenCalled();
-        expect(divEl.nativeElement.classList.contains("hidden")).toBeFalsy();
+        expect(divEl.nativeElement.classList.contains(TOGGLER_CLASS)).toBeTruthy();
     });
     it("should hide the content when close button is clicked", () => {
         const fixture = TestBed.createComponent(IgxTogglerTestClass);
@@ -73,7 +86,7 @@ fdescribe("IgxToggler", () => {
         closeButton.click();
         fixture.detectChanges();
 
-        expect(divEl.classList.contains("hidden")).toBeTruthy();
+        expect(divEl.classList.contains(HIDDEN_TOGGLER_CLASS)).toBeTruthy();
     });
     it("should hide content when you click outside the toggler's content", () => {
         const fixture = TestBed.createComponent(IgxTogglerTestClass);
@@ -87,14 +100,14 @@ fdescribe("IgxToggler", () => {
         openButton.click();
         fixture.detectChanges();
 
-        expect(divEl.nativeElement.classList.contains("hidden")).toBeFalsy();
+        expect(divEl.nativeElement.classList.contains(TOGGLER_CLASS)).toBeTruthy();
 
         const divC = fixture.debugElement.queryAll(By.css("div"));
         divC[1].nativeElement.click();
         fixture.detectChanges();
 
         expect(dir.onClose.emit).toHaveBeenCalled();
-        expect(divEl.nativeElement.classList.contains("hidden")).toBeTruthy();
+        expect(divEl.nativeElement.classList.contains(HIDDEN_TOGGLER_CLASS)).toBeTruthy();
     });
 });
 
@@ -102,7 +115,7 @@ fdescribe("IgxToggler", () => {
     template: `
     <button id="openBtn" (click)="togglerRef.open()">Open</button>
     <button id="closeBtn" (click)="togglerRef.close()">Close</button>
-    <div igx-toggler #togglerRef="toggler" (onOpen)="open()" (onClose)="close()">
+    <div igx-toggler #togglerRef="toggler" [isLoadedOpen]="isOpen" (onOpen)="open()" (onClose)="close()">
       <ul>
         <li>1</li>
         <li>2</li>
@@ -115,7 +128,7 @@ fdescribe("IgxToggler", () => {
 })
 export class IgxTogglerTestClass {
     @ViewChild(IgxTogglerDirective) public toggler: IgxTogglerDirective;
-
+    public isOpen = false;
     public open() {}
     public close() {}
 }
