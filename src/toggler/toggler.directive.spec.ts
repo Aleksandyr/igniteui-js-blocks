@@ -3,7 +3,7 @@ import { async, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { IgxToggleBoxModule, IgxTogglerDirective } from "./toggler.directive";
 
-describe("IgxToggler", () => {
+fdescribe("IgxToggler", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [
@@ -26,7 +26,29 @@ describe("IgxToggler", () => {
         fixture.detectChanges();
 
         const divEl = fixture.debugElement.query(By.directive(IgxTogglerDirective)).nativeElement;
-        expect(divEl.getAttribute("class")).toBe("hidden");
+        expect(divEl.classList.contains("hidden")).toBeTruthy();
+    });
+    it("should emit 'onOpen' event", () => {
+        const fixture = TestBed.createComponent(IgxTogglerTestClass);
+        fixture.detectChanges();
+
+        const toggler = fixture.componentInstance.toggler;
+        spyOn(toggler.onOpen, "emit");
+        toggler.onOpen.emit();
+        fixture.detectChanges();
+
+        expect(toggler.onOpen.emit).toHaveBeenCalled();
+    });
+    it("should emit 'onClose' event", () => {
+        const fixture = TestBed.createComponent(IgxTogglerTestClass);
+        fixture.detectChanges();
+
+        const toggler = fixture.componentInstance.toggler;
+        spyOn(toggler.onClose, "emit");
+        toggler.onClose.emit();
+        fixture.detectChanges();
+
+        expect(toggler.onClose.emit).toHaveBeenCalled();
     });
     it("should show the content and emit 'onOpen' event when open button is clicked", () => {
         const fixture = TestBed.createComponent(IgxTogglerTestClass);
@@ -40,7 +62,7 @@ describe("IgxToggler", () => {
         fixture.detectChanges();
 
         expect(dir.onOpen.emit).toHaveBeenCalled();
-        expect(divEl.nativeElement.getAttribute("class")).toBe("");
+        expect(divEl.nativeElement.classList.contains("hidden")).toBeFalsy();
     });
     it("should hide the content when close button is clicked", () => {
         const fixture = TestBed.createComponent(IgxTogglerTestClass);
@@ -51,11 +73,12 @@ describe("IgxToggler", () => {
         closeButton.click();
         fixture.detectChanges();
 
-        expect(divEl.getAttribute("class")).toBe("hidden");
+        expect(divEl.classList.contains("hidden")).toBeTruthy();
     });
     it("should hide content when you click outside the toggler's content", () => {
         const fixture = TestBed.createComponent(IgxTogglerTestClass);
         fixture.detectChanges();
+
         const container = fixture.componentInstance;
         const divEl = fixture.debugElement.query(By.directive(IgxTogglerDirective));
         const dir = divEl.injector.get(IgxTogglerDirective) as IgxTogglerDirective;
@@ -63,13 +86,15 @@ describe("IgxToggler", () => {
         const openButton = fixture.debugElement.query(By.css("#openBtn")).nativeElement;
         openButton.click();
         fixture.detectChanges();
-        expect(divEl.nativeElement.getAttribute("class")).toBe("");
+
+        expect(divEl.nativeElement.classList.contains("hidden")).toBeFalsy();
 
         const divC = fixture.debugElement.queryAll(By.css("div"));
         divC[1].nativeElement.click();
         fixture.detectChanges();
+
         expect(dir.onClose.emit).toHaveBeenCalled();
-        expect(divEl.nativeElement.getAttribute("class")).toBe("hidden");
+        expect(divEl.nativeElement.classList.contains("hidden")).toBeTruthy();
     });
 });
 
@@ -89,6 +114,8 @@ describe("IgxToggler", () => {
     `
 })
 export class IgxTogglerTestClass {
+    @ViewChild(IgxTogglerDirective) public toggler: IgxTogglerDirective;
+
     public open() {}
     public close() {}
 }
