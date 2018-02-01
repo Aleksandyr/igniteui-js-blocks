@@ -69,7 +69,7 @@ fdescribe("IgxToggler", () => {
 
         expect(toggle.onClose.emit).toHaveBeenCalled();
     });
-    it("IgxToggleAction ---------", fakeAsync(() => {
+    it("should open toggle when IgxToggleActionDiretive is clicked and toggle is closed", fakeAsync(() => {
         const fixture = TestBed.createComponent(IgxToggleActionTestClass);
         fixture.detectChanges();
         fixture.debugElement.componentInstance.isClosed = true;
@@ -86,7 +86,7 @@ fdescribe("IgxToggler", () => {
         expect(divEl.classList.contains(TOGGLER_CLASS)).toBeTruthy();
 
     }));
-    it("2 IgxToggleAction ---------", fakeAsync(() => {
+    it("should close toggle when IgxToggleActionDiretive is clicked and toggle is opened", fakeAsync(() => {
         const fixture = TestBed.createComponent(IgxToggleActionTestClass);
         fixture.detectChanges();
 
