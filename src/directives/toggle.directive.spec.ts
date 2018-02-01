@@ -1,9 +1,8 @@
 import { Component, EventEmitter, Output, ViewChild } from "@angular/core";
-import { async, TestBed, fakeAsync, tick } from "@angular/core/testing";
+import { async, fakeAsync, TestBed, tick } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { IgxToggleActionDirective, IgxToggleDirective, IgxToggleModule } from "./toggle.directive";
-import { detectChanges } from "@angular/core/src/render3/component";
 
 fdescribe("IgxToggler", () => {
     const HIDDEN_TOGGLER_CLASS = "igx-toggle-hidden";
@@ -73,6 +72,9 @@ fdescribe("IgxToggler", () => {
     it("IgxToggleAction ---------", fakeAsync(() => {
         const fixture = TestBed.createComponent(IgxToggleActionTestClass);
         fixture.detectChanges();
+        fixture.debugElement.componentInstance.isClosed = true;
+        tick();
+        fixture.detectChanges();
 
         const button = fixture.debugElement.query(By.directive(IgxToggleActionDirective)).nativeElement;
         const divEl = fixture.debugElement.query(By.directive(IgxToggleDirective)).nativeElement;
@@ -88,10 +90,6 @@ fdescribe("IgxToggler", () => {
         const fixture = TestBed.createComponent(IgxToggleActionTestClass);
         fixture.detectChanges();
 
-        fixture.debugElement.componentInstance.isClosed = false;
-        tick();
-        fixture.detectChanges();
-
         const button = fixture.debugElement.query(By.directive(IgxToggleActionDirective)).nativeElement;
         const divEl = fixture.debugElement.query(By.directive(IgxToggleDirective)).nativeElement;
         expect(fixture.debugElement.componentInstance.isClosed).toBeFalsy();
@@ -99,9 +97,24 @@ fdescribe("IgxToggler", () => {
         button.click();
         tick();
         fixture.detectChanges();
-        expect(divEl.classList.contains(HIDDEN_TOGGLER_CLASS)).toBeTruthy();
+        tick(2000);
 
+        expect(divEl.classList.contains(HIDDEN_TOGGLER_CLASS)).toBeTruthy();
     }));
+/*     it("should hide content when you click outside the toggler's content", fakeAsync(() => {
+        const fixture = TestBed.createComponent(IgxToggleActionTestClass);
+        fixture.detectChanges();
+
+        const divEl = fixture.debugElement.query(By.directive(IgxToggleDirective)).nativeElement;
+        expect(fixture.debugElement.componentInstance.isClosed).toBeFalsy();
+        expect(divEl.classList.contains(TOGGLER_CLASS)).toBeTruthy();
+        const divC = fixture.debugElement.queryAll(By.css("div"));
+        divC[1].nativeElement.click();
+        tick();
+        fixture.detectChanges();
+
+        expect(divEl.nativeElement.classList.contains(HIDDEN_TOGGLER_CLASS)).toBeTruthy();
+    })); */
 });
 
 @Component({
@@ -137,6 +150,6 @@ export class IgxToggleTestClass {
     `
 })
 export class IgxToggleActionTestClass {
-    public isClosed = true;
+    public isClosed = false;
     @ViewChild(IgxToggleDirective) public toggle: IgxToggleDirective;
 }
