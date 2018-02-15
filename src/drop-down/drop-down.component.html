@@ -1,9 +1,7 @@
 <input type="text" igxInput [igxToggleAction]="toggle" />
 <span igxToggle #toggle="toggle">
     <igx-list >
-        <igx-list-item>1</igx-list-item>
-        <igx-list-item>1</igx-list-item>
-        <igx-list-item>1</igx-list-item>
+        <igx-list-item *ngFor="let item of data">{{item[valueKey]}}</igx-list-item>
     </igx-list>    
 </span>
 <!-- <div igxToggle #toggle="toggle">

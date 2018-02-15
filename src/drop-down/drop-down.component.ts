@@ -1,3 +1,4 @@
+import { CommonModule, NgForOf } from "@angular/common";
 import { Component, Input, NgModule } from "@angular/core";
 import { IgxInputModule,  IgxListModule, IgxToggleModule } from "../main";
 @Component({
@@ -18,6 +19,6 @@ export class IgxDropDownComponent {
 @NgModule({
     declarations: [IgxDropDownComponent],
     exports: [IgxDropDownComponent],
-    imports: [IgxToggleModule, IgxInputModule, IgxListModule]
+    imports: [IgxToggleModule, IgxInputModule, IgxListModule, CommonModule]
 })
 export class IgxDropDownModule {}
